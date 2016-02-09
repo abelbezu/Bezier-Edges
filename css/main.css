@@ -1,0 +1,7 @@
+#myCanvas{
+	margin-top: 50px; 
+	
+	height: 500px; 
+	width: 800px; 
+	border: solid 1px rgb(240, 240, 240);
+}
