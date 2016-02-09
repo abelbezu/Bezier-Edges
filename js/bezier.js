@@ -1,18 +1,17 @@
-
-// var c=document.getElementById("myCanvas");
-// var ctx=c.getContext("2d");
-// ctx.beginPath();
-// ctx.moveTo(100,50);
-// ctx.quadraticCurveTo(60, 190, 100, 150)
-// ctx.bezierCurveTo(165,87,165,278,100,220);
-// ctx.quadraticCurveTo(60, 190, 120, 320)
-// ctx.stroke();
-
-//contains the basic bezier curve definition for convex puzzle edge with inset groove.
-//defines several functions to transform the bezier curve
-
+// Defines the core path. Returns an object containing a set of points
+// It represents a puzzle piece edge as starting from starting_point, going in the 
+// direction of increasing y. Convex to the right (when going along the increasing y direction)
+// With an inset connector oriented to the left.
+//  returns an object with fields 
+//  		- ori -- to represent origin
+//			- tp  -- to represent the bezier control (quadratic) point and end point for the top section in the default 
+//					 orientation
+//          - indent -- to represent the bezier control (cubic) points and end point in the default
+// 					 orientation
+//          - btm -- to represent the bezier control (quadratic) point and end point for the bottom section in the default
+//					 in the default orientation
+// 
 coreBez = function(starting_point){
-	// console.log("drawing");
 	return {
 		ori: starting_point,
 		tp: {
@@ -41,7 +40,7 @@ coreBez = function(starting_point){
 
 };
 
-//returns the scaled version of the p_bez
+// given a core bezier curve (as defined above) returns a version scaled down by the given
 scale = function(p_bez, factor){
 	// console.log("")
 	return {
@@ -73,38 +72,38 @@ scale = function(p_bez, factor){
 
 };
 
-translate = function(p_bez, factor){
-	// console.log("")
+// given a core bezier curve (as defined above) and translates it along the given vector 
+translate = function(p_bez, vec){
 	return {
-		ori: {x: p_bez.ori.x + factor.x, y:p_bez.ori.y +factor.y},
+		ori: {x: p_bez.ori.x + vec.x, y:p_bez.ori.y +vec.y},
 		tp: {
-				cx: p_bez.tp.cx+factor.x,
-				cy: p_bez.tp.cy+factor.y,
-				ex: p_bez.tp.ex+factor.x,
-				ey: p_bez.tp.ey+factor.y
+				cx: p_bez.tp.cx+vec.x,
+				cy: p_bez.tp.cy+vec.y,
+				ex: p_bez.tp.ex+vec.x,
+				ey: p_bez.tp.ey+vec.y
 		},
 
 		indent: {
-				c1x: p_bez.indent.c1x+factor.x,
-				c1y: p_bez.indent.c1y+factor.y,
-				c2x: p_bez.indent.c2x+factor.x,
-				c2y: p_bez.indent.c2y+factor.y,
-				 ex: p_bez.indent.ex+factor.x,
-				 ey: p_bez.indent.ey+factor.y
+				c1x: p_bez.indent.c1x+vec.x,
+				c1y: p_bez.indent.c1y+vec.y,
+				c2x: p_bez.indent.c2x+vec.x,
+				c2y: p_bez.indent.c2y+vec.y,
+				 ex: p_bez.indent.ex+vec.x,
+				 ey: p_bez.indent.ey+vec.y
 
 		},
 		btm: {
-				cx: p_bez.btm.cx+factor.x,
-				cy: p_bez.btm.cy+factor.y,
-				ex: p_bez.btm.ex+factor.x,
-				ey: p_bez.btm.ey+factor.y
+				cx: p_bez.btm.cx+vec.x,
+				cy: p_bez.btm.cy+vec.y,
+				ex: p_bez.btm.ex+vec.x,
+				ey: p_bez.btm.ey+vec.y
 		}
 
 		};
 
 };
 
-flipX = function(p_bez, line){
+// given a core bezier curve (as defined above) horizontally flips it along the the top most x point, or any given vertical line
 	if(!line){
 		line = p_bez.ori.x;
 	}
@@ -136,6 +135,7 @@ flipX = function(p_bez, line){
 		};
 
 }
+// given a core bezier curve (as defined above) vertically flips it along the top most y point or any given horizontal line
 flipY = function(p_bez, line){
 	if(!line){
 		line = p_bez.ori.y;
@@ -168,8 +168,9 @@ flipY = function(p_bez, line){
 		};
 }
 
+
 rotatePoint = function(point, theta){
-	// console.log(point.x*Math.cos(theta) + point.y*Math.sin(theta))
+	
 	return {
 		x: (point.x*Math.cos(theta) + point.y*Math.sin(theta)),
 		y: (point.y*Math.cos(theta) - point.x*Math.sin(theta)) 
